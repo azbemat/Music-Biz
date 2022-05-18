@@ -1,0 +1,160 @@
+﻿@model W2022A6AZB.Models.ArtistWithMediaInfo
+
+@{
+    ViewBag.Title = "Artist details";
+}
+@{
+    var userAccount = new W2022A6AZB.Controllers.RequestUser(User as System.Security.Claims.ClaimsPrincipal);
+}
+
+<h2>Artist details - @Html.DisplayFor(model => model.Name)</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+            <hr />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BirthName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BirthName)
+            <hr />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BirthOrStartDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BirthOrStartDate)
+            <hr />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UrlArtist)
+        </dt>
+
+        <dd>
+            <img src="@Html.DisplayFor(model => model.UrlArtist)" alt="Artist image" class="img-responsive" style="width: 150px;" />
+            <hr />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Genre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Genre)
+            <hr />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Executive)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Executive)
+            <hr />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Portrayal)
+        </dt>
+
+        <dd>
+            <div class="panel panel-default panel-body">
+                @Html.Raw(Model.Portrayal)
+            </div>
+            <hr />
+        </dd>
+
+        <dt>
+            Photos
+        </dt>
+        <dd>
+            @foreach (var item in Model.ArtistMediaItems.Where(m => m.ContentType.Contains("image/")))
+            {
+                <div>
+                    <span>@item.Caption</span><br />
+                    <img src=/artistmediaitem/@item.StringId alt=”@item.Caption” title=”@item.Caption” width=200 />
+                </div>
+            }
+            <hr />
+        </dd>
+
+        <dt>
+            Audio
+        </dt>
+        <dd>
+            @foreach (var item in Model.ArtistMediaItems.Where(m => m.ContentType.Contains("audio/")))
+            {
+                <div>
+                    <span>@item.Caption</span><br />
+                    <audio src=/artistmediaitem/@item.StringId controls="controls"></audio>
+                </div>
+            }
+            <hr />
+        </dd>
+
+        <dt>
+            Documents
+        </dt>
+        <dd>
+            @foreach (var item in Model.ArtistMediaItems.Where(m => m.ContentType.Contains("application/vnd.openxmlformats-officedocument.wordprocessingml.document")))
+            {
+                <div>
+                    <span>@item.Caption</span><br />
+                    <a href=/artistmediaitem/@item.StringId download>
+                        <img class="img-responsive" src="~/assets/icon-word.png" alt="">
+                    </a>
+                </div>
+            }
+            @foreach (var item in Model.ArtistMediaItems.Where(m => m.ContentType.Contains("application/pdf")))
+            {
+                <div>
+                    <span>@item.Caption</span><br />
+                    <a href=/artistmediaitem/@item.StringId download>
+                        <img class="img-responsive" src="~/assets/icon-pdf.png" alt="">
+                    </a>
+                </div>
+            }
+            @foreach (var item in Model.ArtistMediaItems.Where(m => m.ContentType.Contains("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")))
+            {
+                <div>
+                    <span>@item.Caption</span><br />
+                    <a href=/artistmediaitem/@item.StringId download>
+                        <img class="img-responsive" src="~/assets/icon-excel.png" alt="">
+                    </a>
+                </div>
+            }
+            <hr />
+        </dd>
+
+    </dl>
+</div>
+<p>
+
+    @Html.ActionLink("Back to List", "Index")
+    @if (userAccount.HasRoleClaim("Coordinator"))
+    {
+        <span>
+            |
+            @Html.ActionLink("Add album for this artist", "AddAlbum", new { id = Model.Id })
+        </span>
+        <span>
+            |
+            @Html.ActionLink("Add media for this artist", "AddArtistMediaItem", new { id = Model.Id })
+        </span>
+
+    }
+
+</p>
